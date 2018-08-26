@@ -2,7 +2,7 @@ import random
 
 testing = True
 testing_with_fixed_points = False
-N = 10
+number_of_training_points = 10
 
 
 def sign(n):
@@ -46,12 +46,16 @@ def target_function(inputs):
     return sign(dot_product(target_function_weights, inputs))
 
 
+def g_function(inputs):
+    return sign(dot_product(g_function_weights, inputs))
+
+
 slope = slope(first_rand_point_x1, first_rand_point_x2, second_rand_point_x1, second_rand_point_x2)
 b_constant = b_constant(slope, first_rand_point_x1, first_rand_point_x2)
 target_function_weights = [-b_constant, -slope, 1]
 
 data_set_x = []
-for _ in range(N):
+for _ in range(number_of_training_points):
     x0 = 1
     x1 = random.uniform(-1, 1)
     x2 = random.uniform(-1, 1)
@@ -62,6 +66,46 @@ for input in data_set_x:
     y = target_function(input)
     data_set_y.append(y)
 
+number_of_iterations = 0
+g_function_weights = [0, 0, 0]
+misclassified_points = range(number_of_training_points)
+while len(misclassified_points) > 0:
+    number_of_iterations += 1
+    random_misclassified_point_index = misclassified_points[random.randrange(len(misclassified_points))]
+    random_misclassified_point_y = data_set_y[random_misclassified_point_index]
+    random_misclassified_point_x = data_set_x[random_misclassified_point_index]
+
+    # testing purpose
+    prior_g_function_weights = g_function_weights.copy()
+
+    for d in range(0, len(g_function_weights)):
+        g_function_weights[d] = g_function_weights[d] + random_misclassified_point_y * random_misclassified_point_x[d]
+
+    misclassified_points = []
+    for n in range(len(data_set_x)):
+        input = data_set_x[n]
+        actual_y = target_function(input)
+        learned_y = g_function(input)
+        if (actual_y != learned_y):
+            misclassified_points.append(n)
+
+    # printing iterations
+    print("iteration: " + str(number_of_iterations))
+    print("random index: " + str(random_misclassified_point_index))
+    print("y: " + str(random_misclassified_point_y))
+    print("x: " + str(random_misclassified_point_x))
+    print("weights before: " + str(prior_g_function_weights))
+    print("weights after:  " + str(g_function_weights))
+    print("Data set Y (target)    : " + str(data_set_y))
+    data_set_y_g = []
+    for point in data_set_x:
+        data_set_y_g.append(g_function(point))
+    print("Data set Y (based on g): " + str(data_set_y_g))
+    print("new list of misclassified points: " + str(misclassified_points))
+
+    # if number_of_iterations >= 2:
+    #     break
+
 # testing data set generation
 # print("first point is (" + str(first_rand_point_x1) + ", " + str(first_rand_point_x2) + ")")
 # print("second point is (" + str(second_rand_point_x1) + ", " + str(second_rand_point_x2) + ")")
@@ -69,13 +113,16 @@ for input in data_set_x:
 # print("b constant: " + str(b_constant))
 # print("Equation of line: " + str(slope) + "x + " + str(b_constant))
 # print("target function weights: " + str(target_function_weights))
-#
-# print(data_set_x)
-# for point in data_set_x:
-#     print("(" + str(point[1]) + ", " + str(point[2]) + ")")
-#
-# print(data_set_y)
 
+# print("Data set X: " + str(data_set_x))
+# # for point in data_set_x:
+# #     print("(" + str(point[1]) + ", " + str(point[2]) + ")")
+#
+# print("Data set Y: " + str(data_set_y))
+# data_set_y_g = []
+# for point in data_set_x:
+#     data_set_y_g.append(g_function(point))
+# print("Data set G: " + str(data_set_y_g))
 # test_inputs = [[1, 0.5, 0.5], [1, -0.5, 0.5], [1, -0.5, -0.5], [1, 0.5, -0.5]]
 
 # testing line generation
