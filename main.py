@@ -2,6 +2,7 @@ import random
 
 testing = True
 testing_with_fixed_points = False
+N = 10
 
 
 def sign(n):
@@ -48,20 +49,48 @@ def target_function(inputs):
 slope = slope(first_rand_point_x1, first_rand_point_x2, second_rand_point_x1, second_rand_point_x2)
 b_constant = b_constant(slope, first_rand_point_x1, first_rand_point_x2)
 target_function_weights = [-b_constant, -slope, 1]
-test_inputs = [[1, 0.5, 0.5], [1, -0.5, 0.5], [1, -0.5, -0.5], [1, 0.5, -0.5]]
+
+data_set_x = []
+for _ in range(N):
+    x0 = 1
+    x1 = random.uniform(-1, 1)
+    x2 = random.uniform(-1, 1)
+    data_set_x.append([x0, x1, x2])
+
+data_set_y = []
+for input in data_set_x:
+    y = target_function(input)
+    data_set_y.append(y)
+
+# testing data set generation
+# print("first point is (" + str(first_rand_point_x1) + ", " + str(first_rand_point_x2) + ")")
+# print("second point is (" + str(second_rand_point_x1) + ", " + str(second_rand_point_x2) + ")")
+# print("slope: " + str(slope))
+# print("b constant: " + str(b_constant))
+# print("Equation of line: " + str(slope) + "x + " + str(b_constant))
+# print("target function weights: " + str(target_function_weights))
+#
+# print(data_set_x)
+# for point in data_set_x:
+#     print("(" + str(point[1]) + ", " + str(point[2]) + ")")
+#
+# print(data_set_y)
+
+# test_inputs = [[1, 0.5, 0.5], [1, -0.5, 0.5], [1, -0.5, -0.5], [1, 0.5, -0.5]]
 
 # testing line generation
-if testing:
-    print("first point is (" + str(first_rand_point_x1) + ", " + str(first_rand_point_x2) + ")")
-    print("second point is (" + str(second_rand_point_x1) + ", " + str(second_rand_point_x2) + ")")
-    print("slope: " + str(slope))
-    print("b constant: " + str(b_constant))
-    print("target function weights: " + str(target_function_weights))
+# if testing:
+#     print("first point is (" + str(first_rand_point_x1) + ", " + str(first_rand_point_x2) + ")")
+#     print("second point is (" + str(second_rand_point_x1) + ", " + str(second_rand_point_x2) + ")")
+#     print("slope: " + str(slope))
+#     print("b constant: " + str(b_constant))
+#     print("target function weights: " + str(target_function_weights))
+#
+#     for test_point in test_inputs:
+#         print("test inputs: " + str(test_point))
+#         print("dot product: " + str(dot_product(test_point, target_function_weights)))
+#         print("test_target_function: " + str(target_function(test_point)))
 
-    for test_point in test_inputs:
-        print("test inputs: " + str(test_point))
-        print("dot product: " + str(dot_product(test_point, target_function_weights)))
-        print("test_target_function: " + str(target_function(test_point)))
 
 # testing dot product
 # A = [0, 4, -2]
