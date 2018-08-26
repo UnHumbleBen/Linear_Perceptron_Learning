@@ -104,6 +104,8 @@ while len(misclassified_points) > 0:
         if (actual_y != learned_y):
             misclassified_points.append(n)
 
+
+
     # printing iterations
     # print("iteration: " + str(number_of_iterations))
     # print("random index: " + str(random_misclassified_point_index))
