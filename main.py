@@ -55,11 +55,20 @@ b_constant = b_constant(slope, first_rand_point_x1, first_rand_point_x2)
 target_function_weights = [-b_constant, -slope, 1]
 
 data_set_x = []
+
 for _ in range(number_of_training_points):
     x0 = 1
     x1 = random.uniform(-1, 1)
     x2 = random.uniform(-1, 1)
     data_set_x.append([x0, x1, x2])
+
+# testing purpose (printing data set x)
+# data_set_x_str = ""
+# for input in data_set_x:
+#     x1 = input[1]
+#     x2 = input[2]
+#     data_set_x_str += "(" + str(x1) + ", " + str(x2) + ") "
+# print(data_set_x_str)
 
 data_set_y = []
 for input in data_set_x:
@@ -76,10 +85,16 @@ while len(misclassified_points) > 0:
     random_misclassified_point_x = data_set_x[random_misclassified_point_index]
 
     # testing purpose
-    prior_g_function_weights = g_function_weights.copy()
+    # prior_g_function_weights = g_function_weights.copy()
 
     for d in range(0, len(g_function_weights)):
         g_function_weights[d] = g_function_weights[d] + random_misclassified_point_y * random_misclassified_point_x[d]
+
+    # testing purpose (printing g function)
+    # g_function_w0 = g_function_weights[0]
+    # g_function_w1 = g_function_weights[1]
+    # g_function_w2 = g_function_weights[2]
+    # g_function_str = "f(x,y) = " + str(g_function_w0) + " + " + str(g_function_w1) + "x + " + str(g_function_w2) + "y"
 
     misclassified_points = []
     for n in range(len(data_set_x)):
@@ -90,18 +105,19 @@ while len(misclassified_points) > 0:
             misclassified_points.append(n)
 
     # printing iterations
-    print("iteration: " + str(number_of_iterations))
-    print("random index: " + str(random_misclassified_point_index))
-    print("y: " + str(random_misclassified_point_y))
-    print("x: " + str(random_misclassified_point_x))
-    print("weights before: " + str(prior_g_function_weights))
-    print("weights after:  " + str(g_function_weights))
-    print("Data set Y (target)    : " + str(data_set_y))
-    data_set_y_g = []
-    for point in data_set_x:
-        data_set_y_g.append(g_function(point))
-    print("Data set Y (based on g): " + str(data_set_y_g))
-    print("new list of misclassified points: " + str(misclassified_points))
+    # print("iteration: " + str(number_of_iterations))
+    # print("random index: " + str(random_misclassified_point_index))
+    # print("y: " + str(random_misclassified_point_y))
+    # print("x: " + str(random_misclassified_point_x))
+    # print("weights before: " + str(prior_g_function_weights))
+    # print("weights after:  " + str(g_function_weights))
+    # print("g_function: " + g_function_str)
+    # print("Data set Y (target)    : " + str(data_set_y))
+    # data_set_y_g = []
+    # for point in data_set_x:
+    #     data_set_y_g.append(g_function(point))
+    # print("Data set Y (based on g): " + str(data_set_y_g))
+    # print("new list of misclassified points: " + str(misclassified_points))
 
     # if number_of_iterations >= 2:
     #     break
