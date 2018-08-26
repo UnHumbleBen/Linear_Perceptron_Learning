@@ -80,3 +80,40 @@ def PLA(number_of_training_points):
             learned_y = g_function(input)
             if (actual_y != learned_y):
                 misclassified_points.append(n)
+
+    # finding probability that f and g disagree
+    number_of_random_points = 1000
+    number_of_disagreements = 0
+    for _ in range(number_of_random_points):
+        random_point_x1 = random.uniform(-1, 1)
+        random_point_x2 = random.uniform(-1, 1)
+        random_input = [1, random_point_x1, random_point_x2]
+        f_value = target_function(random_input)
+        g_value = g_function(random_input)
+
+        # testing purpose
+        # print(f_value - g_value)
+
+        if f_value != g_value:
+            number_of_disagreements += 1
+    probability_that_f_and_g_disagree = number_of_disagreements / number_of_random_points
+
+    # return number of iterations and probability in a list
+    return [number_of_iterations, probability_that_f_and_g_disagree]
+
+number_of_runs = 1000
+number_of_training_points = 100
+
+total_number_of_iterations = 0
+total_probability_that_f_and_g_disagree = 0
+for _ in range(number_of_runs):
+    results = PLA(number_of_training_points)
+    total_number_of_iterations += results[0]
+    total_probability_that_f_and_g_disagree += results[1]
+
+average_number_of_iterations = total_number_of_iterations / number_of_runs
+average_probability_that_f_and_g_disagree = total_probability_that_f_and_g_disagree / number_of_runs
+
+print("For N = " + str(number_of_training_points))
+print("Average number of iterations: " + str(average_number_of_iterations))
+print("Average P[f(x) != g(x)]: " + str(average_probability_that_f_and_g_disagree))
