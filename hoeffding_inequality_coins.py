@@ -50,7 +50,7 @@ for _ in range(number_of_experiments):
     result = experiment(number_of_coins, number_of_flips)
     v_1_sum += result[0]
     v_rand_sum += result[1]
-    v_rand_sum += result[2]
+    v_min_sum += result[2]
 
 print("v1:    " + str(v_1_sum / number_of_experiments))
 print("v_rand " + str(v_rand_sum / number_of_experiments))
