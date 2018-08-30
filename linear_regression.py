@@ -131,6 +131,6 @@ avg_fraction_in = results[0] / number_of_experiments
 avg_fraction_out = results[1] / number_of_experiments
 avg_iterations = results[2] / number_of_experiments
 
-print("in sample errors:             " + str(avg_fraction_in))
-print("out of sample errors:         " + str(avg_fraction_out))
-print("average number of iterations: " + str(avg_iterations))
+print("in sample errors (before PLA):     " + str(avg_fraction_in))
+print("out of sample errors (before PLA): " + str(avg_fraction_out))
+print("average number of iterations:      " + str(avg_iterations))
