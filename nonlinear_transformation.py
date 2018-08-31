@@ -1,4 +1,6 @@
 import random
+import numpy
+
 
 def experiment(number_of_training_points, noise_probability):
     def sign(n):
@@ -19,6 +21,34 @@ def experiment(number_of_training_points, noise_probability):
         x1 = inputs[1]
         x2 = inputs[2]
         return sign(x1 ** 2 + x2 ** 2 - 0.6)
+
+    def linear_regression():
+        x_matrix = numpy.reshape(data_set_x, (number_of_training_points, 3))
+        y_matrix = numpy.reshape(data_set_y, (number_of_training_points, 1))
+        w_matrix = numpy.matmul(numpy.linalg.pinv(x_matrix), y_matrix)
+        w_list = []
+        for w_row in w_matrix:
+            w_list.append(w_row[0])
+        return w_list
+
+    def g_function(inputs):
+        return sign(dot_product(g_function_weights, inputs))
+
+    def g_misclassified_points():
+        misclassified_points = []
+        for n in range(len(data_set_x)):
+            input = data_set_x[n]
+            actual_y = target_function(input)
+            learned_y = g_function(input)
+            if (actual_y != learned_y):
+                misclassified_points.append(n)
+        return misclassified_points
+
+    def in_sample_error():
+        return len(g_misclassified_points()) / number_of_training_points
+
+    # initialize list for result
+    result = []
 
     # generating a training set
     data_set_x = []
@@ -43,14 +73,23 @@ def experiment(number_of_training_points, noise_probability):
     for n in noise_indices:
         data_set_y[n] = -data_set_y[n]
 
+    # linear regression
+    g_function_weights = linear_regression()
+
+    # in-sample error
+    result.append(in_sample_error())
+
+    return result
+
     # TESTING
+    # testing weight list
+
     # testing noise generation
     # number_of_noise_outputs = 0
     # for n in range(number_of_training_points):
     #     if no_noise_data_set_y[n] != data_set_y[n]:
     #         number_of_noise_outputs += 1
     # print(number_of_noise_outputs)
-
 
     # testing target function
     # for n in range(number_of_training_points):
@@ -61,9 +100,19 @@ def experiment(number_of_training_points, noise_probability):
     #     print("f(" + str(x1) + ", " + str(x2) + ")")
     #     print(output_y)
 
+
 N = 1000
 p_noise = 0.1
-experiment(N, p_noise)
+
+number_of_experiments = 1000
+sum_result = experiment(N, p_noise)
+for _ in range(1, number_of_experiments):
+    new_result = experiment(N, p_noise)
+    for index in range(len(sum_result)):
+        sum_result[index] += new_result[0]
+average_result = [totals / N for totals in sum_result]
+E_in = average_result[0]
+print("average in-sample error: " + str(E_in))
 
 # sample output 1
 # f(-0.8694395529642278, -0.1664175742706442)
