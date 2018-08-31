@@ -85,9 +85,20 @@ def experiment(number_of_training_points, noise_probability):
     # in-sample error
     result.append(in_sample_error())
 
-    return result
+    # transform data set
+    data_set_z = []
+    for input in data_set_x:
+        data_set_z.append(nonlinear_transform(input))
 
     # TESTING
+    # testing nonlinear transformation
+    # for n in range(len(data_set_x)):
+    #     x1 = data_set_x[n][1]
+    #     x2 = data_set_x[n][2]
+    #     print("(" + str(x1) + ", " + str(x2) + ")")
+    #     print(data_set_x[n])
+    #     print(data_set_z[n])
+
     # testing weight list
 
     # testing noise generation
@@ -106,11 +117,13 @@ def experiment(number_of_training_points, noise_probability):
     #     print("f(" + str(x1) + ", " + str(x2) + ")")
     #     print(output_y)
 
+    return result
 
-N = 1000
+
+N = 10
 p_noise = 0.1
 
-number_of_experiments = 1000
+number_of_experiments = 1
 sum_result = experiment(N, p_noise)
 for _ in range(1, number_of_experiments):
     new_result = experiment(N, p_noise)
