@@ -22,9 +22,9 @@ def experiment(number_of_training_points, noise_probability):
         x2 = inputs[2]
         return sign(x1 ** 2 + x2 ** 2 - 0.6)
 
-    def linear_regression():
-        x_matrix = numpy.reshape(data_set_x, (number_of_training_points, 3))
-        y_matrix = numpy.reshape(data_set_y, (number_of_training_points, 1))
+    def linear_regression(input, output):
+        x_matrix = numpy.reshape(input, (number_of_training_points, 3))
+        y_matrix = numpy.reshape(output, (number_of_training_points, 1))
         w_matrix = numpy.matmul(numpy.linalg.pinv(x_matrix), y_matrix)
         w_list = []
         for w_row in w_matrix:
@@ -47,6 +47,11 @@ def experiment(number_of_training_points, noise_probability):
     def in_sample_error():
         return len(g_misclassified_points()) / number_of_training_points
 
+    def nonlinear_transform(inputs):
+        x1 = inputs[1]
+        x2 = inputs[2]
+        return [1, x1, x2, x1 * x2, x1 ** 2, x2 ** 2]
+
     # initialize list for result
     result = []
 
@@ -64,6 +69,7 @@ def experiment(number_of_training_points, noise_probability):
         y = target_function(input)
         data_set_y.append(y)
 
+    # TESTING
     # for testing noise generation
     # no_noise_data_set_y = data_set_y.copy()
 
@@ -74,7 +80,7 @@ def experiment(number_of_training_points, noise_probability):
         data_set_y[n] = -data_set_y[n]
 
     # linear regression
-    g_function_weights = linear_regression()
+    g_function_weights = linear_regression(data_set_x, data_set_y)
 
     # in-sample error
     result.append(in_sample_error())
