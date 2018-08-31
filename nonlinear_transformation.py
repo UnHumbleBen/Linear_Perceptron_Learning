@@ -59,9 +59,7 @@ def experiment(number_of_training_points, noise_probability, number_of_out_of_sa
             x1 = random.uniform(-1, 1)
             x2 = random.uniform(-1, 1)
             out_of_sample_x.append([x0, x1, x2])
-        out_of_sample_z = []
-        for input in out_of_sample_x:
-            out_of_sample_z.append(nonlinear_transform(input))
+        out_of_sample_z = nonlinear_transform(out_of_sample_x)
 
         out_of_sample_y = []
         for input in out_of_sample_x:
@@ -75,12 +73,16 @@ def experiment(number_of_training_points, noise_probability, number_of_out_of_sa
 
         return len(g_misclassified_points(out_of_sample_z, out_of_sample_y)) / number_of_training_points
 
-
-
     def nonlinear_transform(inputs):
-        x1 = inputs[1]
-        x2 = inputs[2]
-        return [1, x1, x2, x1 * x2, x1 ** 2, x2 ** 2]
+        if isinstance(inputs[0], int):
+            x1 = inputs[1]
+            x2 = inputs[2]
+            return [1, x1, x2, x1 * x2, x1 ** 2, x2 ** 2]
+        elif isinstance(inputs[0], list):
+            transformed_list = []
+            for input in inputs:
+                transformed_list.append(nonlinear_transform(input))
+            return transformed_list
 
     # initialize list for result
     result = []
@@ -116,9 +118,7 @@ def experiment(number_of_training_points, noise_probability, number_of_out_of_sa
     result.append(in_sample_error())
 
     # transform data set
-    data_set_z = []
-    for input in data_set_x:
-        data_set_z.append(nonlinear_transform(input))
+    data_set_z = nonlinear_transform(data_set_x)
 
     # linear regression with transformed data set
     g_function_weights = linear_regression(data_set_z, data_set_y)
@@ -178,9 +178,9 @@ x3 = average_result[4]
 x4 = average_result[5]
 x5 = average_result[6]
 E_out = average_result[7]
-print(average_result)
 print("average in-sample error (before transformation): " + str(E_in))
-print("g(x_1, x_2) = sign(" + str(x0) + " + " + str(x1) + "x_1 + " + str(x2) + "x_2 + " + str(x3) + "x_1*x_2 + " + str(x4) + "x_1^2 + " + str(x5) + "x_2^2)")
+print("average hypothesis: g(x_1, x_2) = sign(" + str(x0) + " + " + str(x1) + "x_1 + " + str(x2) + "x_2 + " + str(x3) + "x_1*x_2 + " + str(
+    x4) + "x_1^2 + " + str(x5) + "x_2^2)")
 print("average out-of-sample error (after transformation): " + str(E_out))
 # sample output 1
 # f(-0.8694395529642278, -0.1664175742706442)
