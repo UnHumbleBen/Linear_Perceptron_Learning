@@ -1,6 +1,6 @@
 import random
 
-def experiment(number_of_training_points):
+def experiment(number_of_training_points, noise_probability):
     def sign(n):
         if n == 0:
             return 0
@@ -34,18 +34,36 @@ def experiment(number_of_training_points):
         y = target_function(input)
         data_set_y.append(y)
 
-    # testing
+    # for testing noise generation
+    # no_noise_data_set_y = data_set_y.copy()
+
+    # generating noise
+    number_of_noise_outputs = int(number_of_training_points * noise_probability)
+    noise_indices = random.sample(range(number_of_training_points), number_of_noise_outputs)
+    for n in noise_indices:
+        data_set_y[n] = -data_set_y[n]
+
+    # TESTING
+    # testing noise generation
+    # number_of_noise_outputs = 0
+    # for n in range(number_of_training_points):
+    #     if no_noise_data_set_y[n] != data_set_y[n]:
+    #         number_of_noise_outputs += 1
+    # print(number_of_noise_outputs)
+
+
     # testing target function
-    for n in range(number_of_training_points):
-        input_x = data_set_x[n]
-        x1 = input_x[1]
-        x2 = input_x[2]
-        output_y = data_set_y[n]
-        print("f(" + str(x1) + ", " + str(x2) + ")")
-        print(output_y)
+    # for n in range(number_of_training_points):
+    #     input_x = data_set_x[n]
+    #     x1 = input_x[1]
+    #     x2 = input_x[2]
+    #     output_y = data_set_y[n]
+    #     print("f(" + str(x1) + ", " + str(x2) + ")")
+    #     print(output_y)
 
-
-experiment(10)
+N = 1000
+p_noise = 0.1
+experiment(N, p_noise)
 
 # sample output 1
 # f(-0.8694395529642278, -0.1664175742706442)
