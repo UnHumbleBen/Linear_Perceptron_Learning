@@ -155,7 +155,7 @@ def experiment(number_of_training_points, noise_probability, number_of_out_of_sa
     #     output_y = data_set_y[n]
     #     print("f(" + str(x1) + ", " + str(x2) + ")")
     #     print(output_y)
-
+    print(result)
     return result
 
 
