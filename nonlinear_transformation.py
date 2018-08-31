@@ -2,7 +2,7 @@ import random
 import numpy
 
 
-def experiment(number_of_training_points, noise_probability):
+def experiment(number_of_training_points, noise_probability, number_of_out_of_sample_points):
     def sign(n):
         if n == 0:
             return 0
@@ -35,11 +35,15 @@ def experiment(number_of_training_points, noise_probability):
     def g_function(inputs):
         return sign(dot_product(g_function_weights, inputs))
 
-    def g_misclassified_points():
+    def g_misclassified_points(input_set=None, output_set=None):
+        if input_set is None:
+            input_set = data_set_x
+        if output_set is None:
+            output_set = data_set_y
         misclassified_points = []
-        for n in range(len(data_set_x)):
-            input = data_set_x[n]
-            actual_y = target_function(input)
+        for n in range(len(input_set)):
+            input = input_set[n]
+            actual_y = output_set[n]
             learned_y = g_function(input)
             if (actual_y != learned_y):
                 misclassified_points.append(n)
@@ -47,6 +51,31 @@ def experiment(number_of_training_points, noise_probability):
 
     def in_sample_error():
         return len(g_misclassified_points()) / number_of_training_points
+
+    def out_of_sample_error(number_of_out_of_sample_points):
+        out_of_sample_x = []
+        for _ in range(number_of_out_of_sample_points):
+            x0 = 1
+            x1 = random.uniform(-1, 1)
+            x2 = random.uniform(-1, 1)
+            out_of_sample_x.append([x0, x1, x2])
+        out_of_sample_z = []
+        for input in out_of_sample_x:
+            out_of_sample_z.append(nonlinear_transform(input))
+
+        out_of_sample_y = []
+        for input in out_of_sample_x:
+            y = target_function(input)
+            out_of_sample_y.append(y)
+
+        number_of_noise_outputs = int(number_of_out_of_sample_points * noise_probability)
+        noise_indices = random.sample(range(number_of_out_of_sample_points), number_of_noise_outputs)
+        for n in noise_indices:
+            out_of_sample_y[n] = -out_of_sample_y[n]
+
+        return len(g_misclassified_points(out_of_sample_z, out_of_sample_y)) / number_of_training_points
+
+
 
     def nonlinear_transform(inputs):
         x1 = inputs[1]
@@ -70,7 +99,7 @@ def experiment(number_of_training_points, noise_probability):
         y = target_function(input)
         data_set_y.append(y)
 
-    # TESTING
+    # TESTING SETUP
     # for testing noise generation
     # no_noise_data_set_y = data_set_y.copy()
 
@@ -96,6 +125,7 @@ def experiment(number_of_training_points, noise_probability):
     for weight in g_function_weights:
         result.append(weight)
 
+    result.append(out_of_sample_error(number_of_out_of_sample_points))
     # TESTING
     # testing tilde w
     # print(g_function_weights)
@@ -131,11 +161,12 @@ def experiment(number_of_training_points, noise_probability):
 
 N = 1000
 p_noise = 0.1
+num_out_sample = 1000
 
 number_of_experiments = 1000
-sum_result = experiment(N, p_noise)
+sum_result = experiment(N, p_noise, num_out_sample)
 for _ in range(1, number_of_experiments):
-    new_result = experiment(N, p_noise)
+    new_result = experiment(N, p_noise, num_out_sample)
     for index in range(len(sum_result)):
         sum_result[index] += new_result[index]
 average_result = [totals / number_of_experiments for totals in sum_result]
@@ -146,10 +177,11 @@ x2 = average_result[3]
 x3 = average_result[4]
 x4 = average_result[5]
 x5 = average_result[6]
+E_out = average_result[7]
 print(average_result)
 print("average in-sample error (before transformation): " + str(E_in))
 print("g(x_1, x_2) = sign(" + str(x0) + " + " + str(x1) + "x_1 + " + str(x2) + "x_2 + " + str(x3) + "x_1*x_2 + " + str(x4) + "x_1^2 + " + str(x5) + "x_2^2)")
-
+print("average out-of-sample error (after transformation): " + str(E_out))
 # sample output 1
 # f(-0.8694395529642278, -0.1664175742706442)
 # 1
