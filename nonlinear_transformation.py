@@ -23,7 +23,8 @@ def experiment(number_of_training_points, noise_probability):
         return sign(x1 ** 2 + x2 ** 2 - 0.6)
 
     def linear_regression(input, output):
-        x_matrix = numpy.reshape(input, (number_of_training_points, 3))
+        number_of_features = len(input[0])
+        x_matrix = numpy.reshape(input, (number_of_training_points, number_of_features))
         y_matrix = numpy.reshape(output, (number_of_training_points, 1))
         w_matrix = numpy.matmul(numpy.linalg.pinv(x_matrix), y_matrix)
         w_list = []
@@ -90,7 +91,15 @@ def experiment(number_of_training_points, noise_probability):
     for input in data_set_x:
         data_set_z.append(nonlinear_transform(input))
 
+    # linear regression with transformed data set
+    g_function_weights = linear_regression(data_set_z, data_set_y)
+    for weight in g_function_weights:
+        result.append(weight)
+
     # TESTING
+    # testing tilde w
+    # print(g_function_weights)
+
     # testing nonlinear transformation
     # for n in range(len(data_set_x)):
     #     x1 = data_set_x[n][1]
@@ -120,18 +129,26 @@ def experiment(number_of_training_points, noise_probability):
     return result
 
 
-N = 10
+N = 1000
 p_noise = 0.1
 
-number_of_experiments = 1
+number_of_experiments = 1000
 sum_result = experiment(N, p_noise)
 for _ in range(1, number_of_experiments):
     new_result = experiment(N, p_noise)
     for index in range(len(sum_result)):
-        sum_result[index] += new_result[0]
-average_result = [totals / N for totals in sum_result]
+        sum_result[index] += new_result[index]
+average_result = [totals / number_of_experiments for totals in sum_result]
 E_in = average_result[0]
-print("average in-sample error: " + str(E_in))
+x0 = average_result[1]
+x1 = average_result[2]
+x2 = average_result[3]
+x3 = average_result[4]
+x4 = average_result[5]
+x5 = average_result[6]
+print(average_result)
+print("average in-sample error (before transformation): " + str(E_in))
+print("g(x_1, x_2) = sign(" + str(x0) + " + " + str(x1) + "x_1 + " + str(x2) + "x_2 + " + str(x3) + "x_1*x_2 + " + str(x4) + "x_1^2 + " + str(x5) + "x_2^2)")
 
 # sample output 1
 # f(-0.8694395529642278, -0.1664175742706442)
