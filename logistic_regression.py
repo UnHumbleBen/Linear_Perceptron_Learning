@@ -107,6 +107,18 @@ def error_gradient(W, X, Y):
     return gradient
 
 
+def stochastic_error_gradient(W, X, Y, n):
+    gradient = []
+    for index in range(3):
+        x = X[n]
+        y = Y[n]
+        w_dot_x = dot_product(W, x)
+        x_index = x[index]
+        this_partial = -y * x_index / (1 + np.exp(y * w_dot_x))
+        gradient.append(this_partial)
+    return gradient
+
+
 def update_weight(weight, gradient):
     new_weight = []
     for index in range(len(weight)):
@@ -114,6 +126,17 @@ def update_weight(weight, gradient):
         this_gradient = gradient[index]
         this_new_weight = this_current_weight - learning_rate * this_gradient
         new_weight.append(this_new_weight)
+    return new_weight
+
+
+def stochastic_update_weight(weight, X, Y):
+    new_weight = weight.copy()
+    shuffled_indices = (list(range(number_of_training_points)))
+    np.random.shuffle(shuffled_indices)
+    for n in shuffled_indices:
+        this_gradient = stochastic_error_gradient(new_weight, X, Y, n)
+        for index in range(len(weight)):
+            new_weight[index] = new_weight[index] - learning_rate * this_gradient[index]
     return new_weight
 
 
@@ -131,30 +154,52 @@ def experiment():
     data_set_y = training_data_set_y(target_function_weight, data_set_x)
 
     # TESTING
-    print("Target Boundary: " + weight_to_equation(target_function_weight))
-    print_data_sets(data_set_x, data_set_y)
+    # print("Target Boundary: " + weight_to_equation(target_function_weight))
+    # print_data_sets(data_set_x, data_set_y)
 
     hypothesis_weight = [0, 0, 0]
-
+    hypothesis_error_in = 0
     epoch = 0
     change = change_threshold + 1
     while change >= change_threshold:
         epoch += 1
         hypothesis_error_in = in_sample_error(hypothesis_weight, data_set_x, data_set_y)
-        hypothesis_gradient = error_gradient(hypothesis_weight, data_set_x, data_set_y)
-        new_hypothesis_weight = update_weight(hypothesis_weight, hypothesis_gradient)
+        # hypothesis_gradient = error_gradient(hypothesis_weight, data_set_x, data_set_y)
+        new_hypothesis_weight = stochastic_update_weight(hypothesis_weight, data_set_x, data_set_y)
         change = difference_norm(hypothesis_weight, new_hypothesis_weight)
 
-        print("Epoch: " + str(epoch))
-        print("Hypothesis weight: " + str(hypothesis_weight))
-        print("Hypothesis error: " + str(hypothesis_error_in))
-        print("Hypothesis gradient: " + str(hypothesis_gradient))
-        print("New hypothesis: " + str(new_hypothesis_weight))
-        print("Change: " + str(change))
+        # print("Epoch: " + str(epoch))
+        # print("Hypothesis weight: " + str(hypothesis_weight))
+        # print("Hypothesis error: " + str(hypothesis_error_in))
+        # print("Hypothesis gradient: " + str(hypothesis_gradient))
+        # print("New hypothesis: " + str(new_hypothesis_weight))
+        # print("Change: " + str(change))
 
         hypothesis_weight = new_hypothesis_weight
+
+    # FINDING E OUT
+
+
+    return [hypothesis_error_in, epoch]
 
 number_of_training_points = 100
 learning_rate = 0.01
 change_threshold = 0.01
-experiment()
+
+number_of_experiments = 10
+sum_result = experiment()
+print("Experiments conducted: 1")
+for i in range(1, number_of_experiments):
+    new_result = experiment()
+    print("Experiments conducted: " + str(i + 1))
+    for index in range(len(sum_result)):
+        sum_result[index] += new_result[index]
+
+average_result = [totals / number_of_experiments for totals in sum_result]
+e_in = average_result[0]
+epoch = average_result[1]
+
+print("\nRESULTS\n")
+print("Error (in sample): " + str(e_in))
+print("Epoch: " + str(epoch))
+
