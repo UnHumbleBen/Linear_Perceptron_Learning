@@ -178,15 +178,17 @@ def experiment():
         hypothesis_weight = new_hypothesis_weight
 
     # FINDING E OUT
+    out_of_sample_x = training_data_set_x()
+    out_of_sample_y = training_data_set_y(hypothesis_weight, out_of_sample_x)
+    hypothesis_error_out = in_sample_error(hypothesis_weight, out_of_sample_x, out_of_sample_y)
 
-
-    return [hypothesis_error_in, epoch]
+    return [hypothesis_error_out, epoch]
 
 number_of_training_points = 100
 learning_rate = 0.01
 change_threshold = 0.01
 
-number_of_experiments = 10
+number_of_experiments = 20
 sum_result = experiment()
 print("Experiments conducted: 1")
 for i in range(1, number_of_experiments):
@@ -196,10 +198,10 @@ for i in range(1, number_of_experiments):
         sum_result[index] += new_result[index]
 
 average_result = [totals / number_of_experiments for totals in sum_result]
-e_in = average_result[0]
+e_out = average_result[0]
 epoch = average_result[1]
 
 print("\nRESULTS\n")
-print("Error (in sample): " + str(e_in))
+print("Error (out-of-sample): " + str(e_out))
 print("Epoch: " + str(epoch))
 
