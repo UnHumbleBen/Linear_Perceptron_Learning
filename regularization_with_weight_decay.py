@@ -1,4 +1,4 @@
-import string
+import numpy as np
 
 
 def file_to_data(file_name):
@@ -50,8 +50,95 @@ def classification_transformation(x):
         return set_z
 
 
+def linear_regression(set_x, set_y, weight_decay=None):
+    number_of_features = len(set_x[0])
+    print("Number of features: " + str(number_of_features))
+    number_of_training_points = len(set_x)
+    print("Number of training points: " + str(number_of_training_points))
+    x_matrix = np.reshape(set_x, (number_of_training_points, number_of_features))
+    print("Constructing X matrix: ")
+    print(np.matrix(x_matrix))
+    y_matrix = np.reshape(set_y, (number_of_training_points, 1))
+    print("Constructing Y matrix: ")
+    print(np.matrix(y_matrix))
+
+    w_matrix = None
+    if weight_decay is None:
+        w_matrix = np.matmul(np.linalg.pinv(x_matrix), y_matrix)
+    else:
+        transposed_x_matrix = np.matrix.transpose(x_matrix)
+        x_matrix_squared = np.matmul(transposed_x_matrix, x_matrix)
+        identity_matrix = np.identity(number_of_features)
+        inverted_matrix = np.linalg.inv(x_matrix_squared + weight_decay * identity_matrix)
+        w_matrix = np.matmul(inverted_matrix, transposed_x_matrix)
+        w_matrix = np.matmul(w_matrix, y_matrix)
+
+
+    print("Solving W matrix: ")
+    print(np.matrix(w_matrix))
+    w_list = []
+    for w_row in w_matrix:
+        w_list.append(w_row[0])
+    print("Converting W matrix into w list")
+    return w_list
+
+
+def sign(n):
+    if n == 0:
+        return 0
+    elif n > 0:
+        return 1
+    else:
+        return -1
+
+
+def dot_product(W, X):
+    total = 0
+    for index in range(0, len(W)):
+        total += W[index] * X[index]
+    return total
+
+
+def classification(weight, input):
+    return sign(dot_product(weight, input))
+
+
+def classification_error(W, X, Y):
+    number_of_individual_errors = 0
+    data_set_size = len(Y)
+    for n in range(len(W)):
+        x = X[n]
+        y = Y[n]
+        hypothesis_y = classification(W, x)
+        if y != hypothesis_y:
+            number_of_individual_errors += 1
+    # print(number_of_individual_errors)
+    return number_of_individual_errors / data_set_size
+
+
 in_data_file_name = 'in_data.txt'
+out_data_file_name = 'out_data.txt'
 (data_set_x, data_set_y) = file_to_data(in_data_file_name)
+(out_data_set_x, out_data_set_y) = file_to_data(out_data_file_name)
+print("\nConverting " + in_data_file_name + " to data set\n")
 print_data(data_set_x, data_set_y)
+print("\nConverting " + out_data_file_name + " to data set\n")
+print_data(out_data_set_x, out_data_set_y)
+
 data_set_z = classification_transformation(data_set_x)
+out_data_set_z = classification_transformation(out_data_set_x)
+print("\nTransforming in_data set using nonlinear transformation\n")
 print_data(data_set_x, data_set_z)
+print("\nTransforming out_data set using nonlinear transformation\n")
+print_data(out_data_set_x, out_data_set_z)
+
+print("\nExecuting linear regression\n")
+hypothesis_weight = linear_regression(data_set_x, data_set_y)
+print("Hypothesis weight: " + str(hypothesis_weight) + "\n")
+
+hypothesis_in_sample_error = classification_error(hypothesis_weight, data_set_z, data_set_y)
+print("In-sample classification error: " + str(hypothesis_in_sample_error))
+hypothesis_out_sample_error = classification_error(hypothesis_weight, out_data_set_z, out_data_set_y)
+print("Out-of-sample classification error: " + str(hypothesis_out_sample_error))
+euclidean_distance_of_error = np.sqrt(hypothesis_in_sample_error ** 2 + hypothesis_out_sample_error ** 2)
+print("Euclidean distance of in-sample and out-of-sample classification errors: " + str(euclidean_distance_of_error))
