@@ -76,11 +76,17 @@ def linear_regression(set_x, set_y, weight_decay=None):
         print("Constructing identity matrix")
         identity_matrix = np.identity(number_of_features)
         print(np.matrix(identity_matrix))
-        inverted_matrix = np.linalg.inv(x_matrix_squared + weight_decay * identity_matrix)
-        print("Calculating (Z(t)Z + lambda * I)^-1")
+        identity_matrix = weight_decay * identity_matrix
+        print("Multiplying identity matrix with weight decay factor")
+        print(np.matrix(identity_matrix))
+        print("Inverting the sum of the two matrices")
+        inverted_matrix = np.linalg.inv(x_matrix_squared + identity_matrix)
+        print(np.matrix(inverted_matrix))
+        print("Solving W matrix: ")
+        print("Multiplying inverted matrix by transposed X matrix")
         w_matrix = np.matmul(inverted_matrix, transposed_x_matrix)
         print(np.matrix(w_matrix))
-        print("Solving W matrix")
+        print("Multiplying product to Y matrix")
         w_matrix = np.matmul(w_matrix, y_matrix)
 
     print(np.matrix(w_matrix))
@@ -132,8 +138,8 @@ def classification_error(W, X, Y):
     # print(number_of_individual_errors)
     return number_of_individual_errors / data_set_size
 
-k = 0
-weight_decay = None
+k = -1
+weight_decay = 10 ** k
 
 in_data_file_name = 'in_data.txt'
 out_data_file_name = 'out_data.txt'
@@ -160,9 +166,9 @@ print("In-sample classification error: " + str(hypothesis_in_sample_error) + "\n
 hypothesis_out_sample_error = classification_error(hypothesis_weight, out_data_set_z, out_data_set_y)
 print("Out-of-sample classification error: " + str(hypothesis_out_sample_error))
 euclidean_distance_of_error = np.sqrt(hypothesis_in_sample_error ** 2 + hypothesis_out_sample_error ** 2)
-print("Euclidean distance of in-sample and out-of-sample classification errors: " + str(euclidean_distance_of_error))
 
 print("\nResults: \n")
 print("Weight decay factor: " + str(weight_decay))
 print("In-sample classification error: " + str(hypothesis_in_sample_error))
 print("Out-of-sample classification error: " + str(hypothesis_out_sample_error))
+print("Euclidean distance of in-sample and out-of-sample classification errors: " + str(euclidean_distance_of_error))
