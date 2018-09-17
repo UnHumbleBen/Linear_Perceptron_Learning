@@ -1,5 +1,6 @@
 import string
 
+
 def file_to_data(file_name):
     set_x = []
     set_y = []
@@ -28,15 +29,29 @@ def file_to_data(file_name):
     return (set_x, set_y)
 
 
-def print_data(X, Y):
-    for n in range(len(X)):
-        print("Input: " + str(X[n]) + " Output: " + str(Y[n]))
+def print_data(X, Y=None):
+    if Y is None:
+        for n in range(len(X)):
+            print("Input: " + str(X[n]))
+    else:
+        for n in range(len(X)):
+            print("Input: " + str(X[n]) + " Output: " + str(Y[n]))
 
-def classification_transformation(X):
-    return
+
+def classification_transformation(x):
+    if (type(x[0]) == int):
+        x1 = x[1]
+        x2 = x[2]
+        return [1, x1, x2, x1 ** 2, x2 ** 2, x1 * x2, abs(x1 - x2), abs(x1 + x2)]
+    else:
+        set_z = []
+        for n in range(len(x)):
+            set_z.append(classification_transformation(x[n]))
+        return set_z
+
 
 in_data_file_name = 'in_data.txt'
 (data_set_x, data_set_y) = file_to_data(in_data_file_name)
 print_data(data_set_x, data_set_y)
-
-
+data_set_z = classification_transformation(data_set_x)
+print_data(data_set_x, data_set_z)
