@@ -9,7 +9,7 @@ def file_to_data(file_name):
             numbers = line.strip().split("  ")
             # print(numbers)
             # print(len(numbers))
-            X = []
+            X = [1]
             for n in range(len(numbers) - 1):
                 X.append(float(numbers[n]))
             set_x.append(X)
@@ -32,6 +32,8 @@ def print_data(X, Y):
     for n in range(len(X)):
         print("Input: " + str(X[n]) + " Output: " + str(Y[n]))
 
+def classification_transformation(X):
+    return
 
 in_data_file_name = 'in_data.txt'
 (data_set_x, data_set_y) = file_to_data(in_data_file_name)
