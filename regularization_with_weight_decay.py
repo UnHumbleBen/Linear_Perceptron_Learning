@@ -13,7 +13,7 @@ def file_to_data(file_name):
             for n in range(len(numbers) - 1):
                 X.append(float(numbers[n]))
             set_x.append(X)
-            set_y.append(float(numbers[-1]))
+            set_y.append(int(float(numbers[-1])))
 
             # print("Input: " + str(X) + "  Output: " + str(Y))
 
