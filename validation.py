@@ -104,6 +104,10 @@ def training(X, Y, k):
     return linear_regression(Z, Y)
 
 
+def validation(W, X, Y, k):
+    Z = classification_transformation(X, k)
+    return classification_error(W, Z, Y)
+
 in_data_file_name = 'in_data.txt'
 out_data_file_name = 'out_data.txt'
 number_of_training_points = 25
@@ -141,3 +145,38 @@ for model_index in models:
 print("Finished calculating weights for all models")
 print("Final weights: ")
 print_data(models, model_hypotheses)
+
+# calculate classification errors in model using validation set
+print("\nCalculating errors using validation set\n")
+validation_model_errors = []
+for index in range(len(models)):
+    this_k = models[index]
+    print("Calculating error for k = " + str(this_k))
+    this_hypothesis = model_hypotheses[index]
+    print("Hypothesis weight = " + str(this_hypothesis))
+    this_error = validation(this_hypothesis, validation_set_x, validation_set_y, this_k)
+    print("Classification error: " + str(this_error))
+    validation_model_errors.append(this_error)
+print("Finished calculating errors for all models")
+print("Final errors: ")
+print_data(models, validation_model_errors)
+
+# calculating classification errors in models using out data
+print("\nCalculating errors using " + str(out_data_file_name) + "\n")
+out_model_errors = []
+for index in range(len(models)):
+    this_k = models[index]
+    print("Calculating error for k = " + str(this_k))
+    this_hypothesis = model_hypotheses[index]
+    print("Hypothesis weight = " + str(this_hypothesis))
+    this_error = validation(this_hypothesis, out_data_set_x, out_data_set_y, this_k)
+    print("Classification error: " + str(this_error))
+    out_model_errors.append(this_error)
+print("Finished calculating errors for all models")
+print("Final errors: ")
+print_data(models, out_model_errors)
+
+# compare validation and out of sample error
+print("\nComparing validation and out-of-sample error\n")
+print("Validation error on left, out-of-sample error on right")
+print_data(validation_model_errors, out_model_errors)
