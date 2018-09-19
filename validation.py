@@ -123,13 +123,13 @@ print_data(out_data_set_x, out_data_set_y)
 
 # splitting data to training and validation sets
 print("\nSplitting " + in_data_file_name + " into training and validation\n")
-training_set_x = data_set_x[:number_of_training_points]
-training_set_y = data_set_y[:number_of_training_points]
+training_set_x = data_set_x[number_of_training_points:]
+training_set_y = data_set_y[number_of_training_points:]
 print("Training set: ")
 print_data(training_set_x, training_set_y)
 print("Training size: " + str(len(training_set_y)))
-validation_set_x = data_set_x[number_of_training_points:]
-validation_set_y = data_set_y[number_of_training_points:]
+validation_set_x = data_set_x[:number_of_training_points]
+validation_set_y = data_set_y[:number_of_training_points]
 print("Validation set: ")
 print_data(validation_set_x, validation_set_y)
 print("Validation size: " + str(len(validation_set_y)))
