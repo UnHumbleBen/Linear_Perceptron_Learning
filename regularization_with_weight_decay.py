@@ -138,8 +138,9 @@ def classification_error(W, X, Y):
     # print(number_of_individual_errors)
     return number_of_individual_errors / data_set_size
 
+
 k = -1
-weight_decay = 10 ** k
+weight_decay = None
 
 in_data_file_name = 'in_data.txt'
 out_data_file_name = 'out_data.txt'
@@ -168,6 +169,7 @@ print("Out-of-sample classification error: " + str(hypothesis_out_sample_error))
 euclidean_distance_of_error = np.sqrt(hypothesis_in_sample_error ** 2 + hypothesis_out_sample_error ** 2)
 
 print("\nResults: \n")
+print("Hypothesis weight: " + str(hypothesis_weight))
 print("Weight decay factor: " + str(weight_decay))
 print("In-sample classification error: " + str(hypothesis_in_sample_error))
 print("Out-of-sample classification error: " + str(hypothesis_out_sample_error))
